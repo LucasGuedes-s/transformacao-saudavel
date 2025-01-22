@@ -105,10 +105,7 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    async submitForm() {
-      if (this.isProcessing) return; // Evita múltiplos cliques
-    
-      this.isProcessing = true; // Desativa o botão
+    async submitForm() {    
       const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c'
 
       if (this.senha !== this.confirm_senha) {
@@ -140,7 +137,6 @@ export default {
               showConfirmButton: false
           });
         }).catch(error =>{
-          this.isProcessing = false; // Reativa o botão após o término
           console.log(error)
               Swal.fire({
                   icon: 'error',
