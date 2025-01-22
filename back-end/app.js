@@ -20,7 +20,7 @@ mercadopago.configurations = {
 };
 // Adicionando o middleware de CORS
 app.use(cors({
-  origin: 'http://localhost:8080', // Permitir apenas o front-end local
+  origin: '*', // Permitir apenas o front-end local
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
   credentials: true, // Permitir cookies/sessões
