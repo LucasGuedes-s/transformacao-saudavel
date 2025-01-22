@@ -97,7 +97,7 @@
   }
   </script>
   
-  <style>
+  <style scoped>
   /* Ajuste o tamanho mínimo das cartas */
   .card {
     min-width: 18rem;

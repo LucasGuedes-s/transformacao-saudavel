@@ -72,7 +72,7 @@ export default {
             Swal.showLoading(); // Mostra o ícone de carregamento
           },
         });
-        const response = await axios.post('http://localhost:3000/adicionar-comprovante', {
+        const response = await axios.post('https://transformacao-saudavel.onrender.com/adicionar-comprovante', {
           email: this.email, // ou apenas `email` se as variáveis forem do mesmo nome
           comprovante: this.imageUrl, // ou apenas `comprovante`
         });

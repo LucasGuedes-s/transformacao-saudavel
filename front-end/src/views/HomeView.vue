@@ -79,7 +79,7 @@ export default {
         })
         return;
       }
-      await axios.post("http://localhost:3000/user/login", {
+      await axios.post("https://transformacao-saudavel.onrender.com/user/login", {
         usuario: {
           email: this.email,
           password: this.password,
@@ -113,7 +113,7 @@ export default {
         const user = result.user;
 
         // Enviar os dados ao backend
-        const response = await axios.post("http://localhost:3000/user/login-google", {
+        const response = await axios.post("https://transformacao-saudavel.onrender.com/user/login-google", {
           uid: user.uid, // ID único do Firebase
           email: user.email,
           displayName: user.displayName,

@@ -62,6 +62,7 @@ export default {
 .navbar-brand {
   display: flex;
   align-items: center;
+  width: 50%;
 }
 .nav-link{
   color: #ffffff;

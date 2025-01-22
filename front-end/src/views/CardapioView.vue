@@ -65,7 +65,7 @@ export default {
   methods: {
     async validar() {
       const email = this.usuario.email
-      const response = await axios.get(`http://localhost:3000/user/pagamento?email=${email}`);
+      const response = await axios.get(`https://transformacao-saudavel.onrender.com/user/pagamento?email=${email}`);
       if (!response.data.pagamento) {
         router.push('/planos')
       }
@@ -73,7 +73,7 @@ export default {
     async fetchReceitas() {
       try {
         const email = this.usuario.email; // Aqui você pega o email de onde estiver armazenado
-        const response = await axios.get(`http://localhost:3000/user/get-receitas?email=${email}`);
+        const response = await axios.get(`https://transformacao-saudavel.onrender.com/user/get-receitas?email=${email}`);
         this.receitasAgrupadas = response.data;
         this.receitas = response.data
       } catch (error) {

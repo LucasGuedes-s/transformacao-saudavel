@@ -115,7 +115,7 @@ export default {
         return
       }
       else{
-        await axios.post("http://localhost:3000/user/cadastro", {
+        await axios.post("https://transformacao-saudavel.onrender.com/user/cadastro", {
             usuario: {
               email: this.email,
               senha: this.senha,

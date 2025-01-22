@@ -138,7 +138,7 @@ export default {
         };
 
         // Envia os dados da receita para o backend
-        const response = await axios.post('http://localhost:3000/receitas', receitaComImagem);
+        const response = await axios.post('https://transformacao-saudavel.onrender.com/receitas', receitaComImagem);
         alert('Receita adicionada com sucesso!');
 
         // Resetando o formulário
@@ -163,7 +163,7 @@ export default {
     },
     async carregarReceitas() {
       try {
-        const response = await axios.get('http://localhost:3000/get-receitas');
+        const response = await axios.get('https://transformacao-saudavel.onrender.com/get-receitas');
         this.receitas = response.data;
       } catch (error) {
         console.error('Erro ao carregar receitas:', error);
@@ -172,7 +172,7 @@ export default {
     },
     async getComprovantes() {
       try {
-        const response = await axios.get('http://localhost:3000/comprovantes/analise');
+        const response = await axios.get('https://transformacao-saudavel.onrender.com/comprovantes/analise');
         this.comprovantes = response.data;
       } catch (error) {
         console.error('Erro ao carregar comprovantes:', error);
@@ -182,7 +182,7 @@ export default {
     async aceitarComprovante(email) {
       try {
         // Lógica para aceitar o comprovante e atualizar o status do usuário
-        const response = await axios.put(`http://localhost:3000/aceitar-comprovante/${email}`, {
+        const response = await axios.put(`https://transformacao-saudavel.onrender.com/aceitar-comprovante/${email}`, {
           email: email // Envia o email como parte do corpo da requisição
         });
         console.log(response);
@@ -201,7 +201,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .container {
   max-width: 600px;
 }

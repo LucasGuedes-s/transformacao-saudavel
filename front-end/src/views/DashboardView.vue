@@ -272,7 +272,7 @@ export default {
         lanches: this.lanches || [],
       };
       console.log(dados)
-      axios.put('http://localhost:3000/update-user', dados)
+      axios.put('https://transformacao-saudavel.onrender.com/update-user', dados)
         .then(response => {
           console.log(response.data.message);
           Swal.fire({
