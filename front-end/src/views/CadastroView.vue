@@ -33,7 +33,8 @@
       <button @click="loginWithGoogle" class="btn btn-primary btn-block mb-3">
         <i class="fab fa-google"></i> Continuar com Google
       </button>-->
-      <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+      <button type="submit"   :disabled="isProcessing"
+      class="btn btn-primary btn-block">Cadastrar</button>
     </form>
   </div>
 </template>
@@ -57,7 +58,8 @@ export default {
         confirm_senha: '',
         profileImage: null,
       },
-      imagePreview: '', // Para mostrar uma prévia da imagem
+      imagePreview: '',
+      isProcessing: false, // Controla o estado do botão
     };
   },
   components: {
@@ -104,6 +106,9 @@ export default {
       }
     },
     async submitForm() {
+      if (this.isProcessing) return; // Evita múltiplos cliques
+    
+      this.isProcessing = true; // Desativa o botão
       const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c'
 
       if (this.senha !== this.confirm_senha) {
@@ -123,6 +128,7 @@ export default {
               foto: [foto]
             }        
         }).then(response => {
+          this.isProcessing = false; // Reativa o botão após o término
           console.log(response)
           router.push('/')
 
@@ -134,6 +140,7 @@ export default {
               showConfirmButton: false
           });
         }).catch(error =>{
+          this.isProcessing = false; // Reativa o botão após o término
           console.log(error)
               Swal.fire({
                   icon: 'error',
@@ -142,8 +149,10 @@ export default {
                   timerProgressBar: true,
                   showConfirmButton: false
               })
-          })
+          }
+        )
       }
+
     }
   }
 };

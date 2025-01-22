@@ -11,7 +11,6 @@ const prisma = new PrismaClient();
 /* Rota de login */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body.usuario;
-  console.log(req.body.usuario)
   const user = await prisma.User.findUnique({ where: { email } });
 
   if (!user) return res.status(404).json({ error: "Usuário não encontrado." });
