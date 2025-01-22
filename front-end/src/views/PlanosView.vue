@@ -1,0 +1,130 @@
+<template>
+    <NavBar />
+    <div id="app" class="container py-5">
+      <h1 class="text-center mb-4">Escolha Seu Plano</h1>
+      <div class="d-flex justify-content-center">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <!-- Plano Básico -->
+          <div class="col">
+            <div class="card text-center shadow-sm h-100" >
+              <div class="card-header bg-danger text-white">Plano Básico</div>
+              <div class="card-body">
+                <h2 class="card-title">R$ 9,90</h2>
+                <p class="card-title">O mais vendido</p>
+                <h6 class="card-text">Receitas para emagrecer 🔥</h6>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Receitas de Café da Manhã</li>
+                  <li class="list-group-item">Receitas de Almoço</li>
+                  <li class="list-group-item">Receitas de Jantar</li>
+                </ul>
+                <button
+                  class="btn btn-danger mt-3"
+                  @click="iniciarPagamento('Plano Básico', 9.90)"
+                >
+                  Assinar
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Plano Intermediário -->
+          <div class="col">
+            <div class="card text-center shadow-sm h-100">
+              <div class="card-header text-white" style="background-color: #0065e9">Plano Intermediário</div>
+              <div class="card-body">
+                <h2 class="card-title">R$ 19,90</h2>
+                <p class="card-text">Receitas exclusivas</p>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Todas as Receitas do Plano Básico</li>
+                  <li class="list-group-item">Receitas de Lanches Saudáveis</li>
+                  <li class="list-group-item">Receitas Especiais para Dietas</li>
+                </ul>
+                <button
+                  class="btn mt-3" style="background-color: #0065e9; color: #ffff"
+                  @click="iniciarPagamento('Plano Intermediário', 14.90)"
+                >
+                  Assinar
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Plano Premium -->
+          <div class="col">
+            <div class="card text-center shadow-sm h-100">
+              <div class="card-header text-white" style="background-color: #004aad">Plano Premium</div>
+              <div class="card-body">
+                <h2 class="card-title">R$ 69,90</h2>
+                <p class="card-text">Receitas completas + suporte com Nutricionista.</p>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Todas as Receitas do Plano Intermediário</li>
+                  <li class="list-group-item">Consultoria com Nutricionista</li>
+                  <li class="list-group-item">Plano Alimentar Personalizado</li>
+                </ul>
+                <button
+                  class="btn mt-3" style="background-color: #004aad; color: #ffff"
+                  @click="iniciarPagamento('Plano Premium', 49.90)"
+                >
+                  Assinar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import NavBar from '@/components/NavDash.vue';
+
+  export default {
+    name: 'planos-view',
+    components: {
+      NavBar,
+    },
+    methods: {
+    async iniciarPagamento(plano, valor) {
+        try {
+        console.log(plano, valor)
+        // Redireciona o usuário para o link de pagamento
+        window.location.href = 'https://mpago.li/1tgpMuc';
+      } catch (error) {
+        console.error("Erro ao iniciar o pagamento:", error);
+        alert("Erro ao gerar o link de pagamento. Tente novamente.");
+      }
+    
+    },
+  }
+  }
+  </script>
+  
+  <style>
+  /* Ajuste o tamanho mínimo das cartas */
+  .card {
+    min-width: 18rem;
+    max-width: 22rem;
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  h2.card-title {
+    font-size: 2rem;
+  }
+  
+  .row {
+    display: flex;
+    justify-content: center; /* Alinha os itens ao centro */
+  }
+  
+  .col {
+    justify-content: center;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  </style>
+  

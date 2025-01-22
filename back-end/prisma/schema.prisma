@@ -1,0 +1,44 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL") // Use uma variável de ambiente para maior segurança.
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  firebaseUid  String?
+  senha        String?
+  nome         String
+  idade        Int?      // Alterado para `Int`, pois idade é numérica
+  peso         String?
+  altura       String?
+  calorias     Float?
+  foto         String[] @db.String // MongoDB armazena arrays como documentos embutidos
+  preferencias String[] @db.String // Altere o nome do campo para seguir convenções (preferências)
+  pagamento    Boolean?  @default(false)
+  receitasFavoritas String[] // IDs de receitas favoritas
+
+}
+
+model Receita {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  titulo      String
+  ingredientes String?
+  receita     String
+  calorias    Float
+  tipo        String   // Valores: "Café", "Almoço" ou "Janta"
+  foto        String[] @db.String // MongoDB armazena arrays como documentos embutidos
+
+}
+
+model Comprovantes {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String @unique
+  comprovante        String[] @db.String // MongoDB armazena arrays como documentos embutidos
+  status      String?
+}
