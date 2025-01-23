@@ -76,7 +76,7 @@ export default {
   name: "login-nav",
   data() {
     return {
-      notifications: ["Seja muito bem vindo (a)", "Para ter acesso as receitas, é necessário a adesão a um plano!"],
+      notifications: ["Seja muito bem vindo (a)"],
     };
   },
   computed: {
