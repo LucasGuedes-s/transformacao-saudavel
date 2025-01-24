@@ -20,13 +20,13 @@
       <!-- Peso -->
       <div class="mb-3">
         <label for="peso" class="form-label">Peso (kg)</label>
-        <input type="number" step="0.5" id="peso" v-model="peso" class="form-control" required />
+        <input type="text" id="peso" v-model="peso" class="form-control" required />
       </div>
 
       <!-- Altura -->
       <div class="mb-3">
         <label for="altura" class="form-label">Altura (cm)</label>
-        <input type="number" step="0.5" id="altura" v-model="altura" class="form-control" required />
+        <input type="text" id="altura" v-model="altura" class="form-control" required />
       </div>
 
       <!-- Idade -->
