@@ -105,9 +105,17 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    async submitForm() {    
-      const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c'
+    async submitForm() {   
 
+      const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c'
+      Swal.fire({
+        title: 'Realizando cadastro...',
+        text: 'Por favor, aguarde.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       if (this.senha !== this.confirm_senha) {
         Swal.fire({
           icon: 'erro',
