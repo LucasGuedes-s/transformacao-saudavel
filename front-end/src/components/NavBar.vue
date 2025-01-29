@@ -24,13 +24,10 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">Sobre Nós</a>
+            <a class="nav-link" href="/sobre-nos">Sobre Nós</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Como Funciona</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Onde Estamos</a>
+            <a class="nav-link" href="/sobre-nos">Como Funciona</a>
           </li>
         </ul>
       </div>
