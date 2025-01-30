@@ -10,7 +10,6 @@
         </li>
       </ul>
       <p><strong>Calorias:</strong> {{ receita.calorias }} kcal</p>
-      <button @click="baixarPdf" class="btn btn-primary mt-3">Baixar completa em PDF</button>
     </div>
   </div>
   <div class="container mt-5">
@@ -235,16 +234,19 @@ export default {
   data() {
     return {
         receita: {
-          titulo: "Salada de Frango Grelhado",
-          descricao: "Uma salada leve e nutritiva, perfeita para o almoço.",
+  
+          titulo: "Omelete Proteico com Espinafre",
+          descricao: "Uma opção saudável e rica em proteínas para o café da manhã ou jantar.",
           ingredientes: [
-            "150g de frango grelhado",
-            "1 xícara de alface americana",
-            "1/2 tomate picado",
-            "1/4 de cebola roxa fatiada",
-            "Azeite e limão a gosto"
+            "3 claras de ovo",
+            "1 ovo inteiro",
+            "1/2 xícara de espinafre picado",
+            "1 colher de sopa de queijo cottage",
+            "Sal e pimenta a gosto",
+            "1 fio de azeite para grelhar"
           ],
-          calorias: 250,
+          calorias: 180,
+        
         },
       receitasAgrupadas: {},
       loading: true,

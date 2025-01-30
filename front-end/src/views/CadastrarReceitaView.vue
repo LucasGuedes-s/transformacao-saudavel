@@ -47,7 +47,6 @@
       </div>
     </div>
 
-    <!-- Exibindo as receitas
     <div class="mt-5">
       <h2>Receitas Cadastradas</h2>
       <div v-if="receitas.length === 0">Não há receitas cadastradas.</div>
@@ -62,7 +61,6 @@
         </li>
       </ul>
     </div>
- -->
     <!-- Exibindo os comprovantes -->
     <div class="mt-5">
       <h2>Comprovantes em Análise</h2>
