@@ -233,21 +233,20 @@ import Swal from 'sweetalert2';
 export default {
   data() {
     return {
-        receita: {
-  
-          titulo: "Omelete Proteico com Espinafre",
-          descricao: "Uma opção saudável e rica em proteínas para o café da manhã ou jantar.",
-          ingredientes: [
-            "3 claras de ovo",
-            "1 ovo inteiro",
-            "1/2 xícara de espinafre picado",
-            "1 colher de sopa de queijo cottage",
-            "Sal e pimenta a gosto",
-            "1 fio de azeite para grelhar"
-          ],
-          calorias: 180,
-        
-        },
+      receita: {
+        titulo: "Panqueca de Banana com Aveia",
+        descricao: "Uma panqueca nutritiva e sem açúcar, perfeita para um café da manhã saudável.",
+        ingredientes: [
+          "1 banana madura amassada",
+          "1 ovo inteiro",
+          "3 colheres de sopa de aveia em flocos",
+          "1/2 colher de chá de canela em pó",
+          "1 colher de chá de fermento em pó",
+          "1 fio de mel ou xilitol (opcional)",
+          "1 fio de azeite ou óleo de coco para grelhar"
+        ],
+        calorias: 210
+      },
       receitasAgrupadas: {},
       loading: true,
       peso: "",
