@@ -25,7 +25,6 @@
             <h5 class="footer-heading">Contato</h5>
             <ul class="footer-contact">
               <li><i class="fas fa-envelope"></i>emagrecimentoprotocolo35@gmail.com</li>
-              <li><i class="fas fa-map-marker-alt"></i> Horácio Pires, 53 - Acari, RN</li>
             </ul>
           </div>
         </div>

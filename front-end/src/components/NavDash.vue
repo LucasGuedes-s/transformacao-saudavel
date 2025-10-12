@@ -39,11 +39,12 @@
               <span class="nav-link" href="#">Meu cardápio</span>
             </router-link>
           </li>
+          <!-- 
           <li class="nav-item">
             <router-link to="/comprovante">
               <span class="nav-link" href="#">Enviar comprovante</span>
             </router-link>
-          </li>
+          </li> -->
 
           <!-- Notificações -->
           <li class="nav-item dropdown">

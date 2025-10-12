@@ -20,7 +20,6 @@
               </div>
               <!-- Barra de progresso fictícia -->
               <div class="mb-4">
-                <h6 class="text-muted">Completo: 80%</h6>
                 <div class="progress">
                   <div
                     class="progress-bar bg-success"

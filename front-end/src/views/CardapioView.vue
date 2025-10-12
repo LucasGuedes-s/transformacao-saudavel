@@ -46,6 +46,7 @@ import Footer from '@/components/footer.vue';
 import { useAuthStore } from '@/store/store.js';
 import router from '@/router';
 import { jsPDF } from "jspdf";
+import Swal from 'sweetalert2';
 
 export default {
   setup() {
@@ -77,15 +78,20 @@ export default {
         this.receitasAgrupadas = response.data;
         this.receitas = response.data
       } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao carregar receitas',
+          text: 'Ocorreu um erro ao buscar as receitas. Por favor, tente novamente mais tarde.',
+        });
+        router.push('/dashboard')
         console.error('Erro ao buscar receitas:', error);
-        alert('Erro ao buscar receitas.');
       } finally {
         this.loading = false;
       }
     },
     /* eslint-disable */
     gerarPDF() {
-      this.validar()
+      //this.validar()
       const nome = this.usuario.nome; // Aqui você pega o email de onde estiver armazenado
 
       const doc = new jsPDF();
@@ -169,7 +175,7 @@ export default {
   },
   created() {
     this.fetchReceitas();
-    this.validar()
+    //this.validar()
   },
   components: {
     NavBar,

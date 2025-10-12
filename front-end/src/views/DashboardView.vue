@@ -1,18 +1,35 @@
 <template>
   <NavBar />
-  <div class="container mt-5">
-    <div class="receita bg-light p-4 rounded shadow-sm">
-      <h3 class="text">Receita do Dia: {{ receita.titulo }}</h3>
-      <p>{{ receita.descricao }}</p>
-      <ul>
-        <li v-for="(ingrediente, index) in receita.ingredientes" :key="index">
-          {{ ingrediente }}
-        </li>
-      </ul>
-      <p><strong>Calorias:</strong> {{ receita.calorias }} kcal</p>
+
+  <!-- CARD DA RECEITA -->
+  <div v-if="receita" class="container form-container receita-container bg-light p-4 rounded shadow-sm mt-4">
+    <div class="receita-content d-flex align-items-start">
+      <!-- Texto à esquerda -->
+      <div class="receita-text flex-fill me-4">
+        <h4 class="mb-3">{{ receita.titulo }}</h4>
+        <p><strong>Calorias:</strong> {{ receita.calorias }} kcal</p>
+
+        <p><strong>Ingredientes:</strong></p>
+        <pre class="ingredientes">{{ receita.ingredientes }}</pre>
+
+        <p><strong>Modo de preparo:</strong></p>
+        <p class="receita">{{ receita.receita }}</p>
+      </div>
+
+      <!-- Imagem à direita -->
+      <div class="receita-imagem text-center">
+        <img
+          v-if="receita.foto && receita.foto.length"
+          :src="receita.foto[0]"
+          alt="Imagem da receita"
+          class="img-fluid rounded shadow-sm"
+        />
+      </div>
     </div>
   </div>
-  <div class="container mt-5">
+
+  <!-- FORMULÁRIO -->
+  <div class="container mt-5 form-container">
     <form @submit.prevent="enviarFormulario" class="bg-light p-4 rounded shadow-sm">
       <h3 class="text">Atualizar dados</h3>
 
@@ -47,170 +64,43 @@
 
       <!-- Quantidade de Calorias -->
       <div class="mb-3">
-        <label for="caloriasDiarias" class="form-label">Quantidade de Calorias para cada refeição</label>
+        <label for="caloriasDiarias" class="form-label">Quantidade de Calorias por refeição</label>
         <select id="objetivo" v-model="calorias" class="form-select">
-          <option value="">Selecione uma quantidade de calorias</option>
+          <option value="">Selecione uma quantidade</option>
           <option value="400">Até 400 kcal/refeição</option>
           <option value="500">500 kcal/refeição</option>
           <option value="600">Até 600 kcal/refeição</option>
           <option value="700">Até 700 kcal/refeição</option>
-
         </select>
         <div class="form-check mt-2">
-          <input class="form-check-input" type="checkbox" id="naoSeiCalorias" value="500" v-model="calorias"
-            @change="limparCaloriasDiarias" />
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="naoSeiCalorias"
+            value="500"
+            v-model="calorias"
+            @change="limparCaloriasDiarias"
+          />
           <label class="form-check-label" for="naoSeiCalorias">Não sei</label>
         </div>
       </div>
 
-
-      <!-- O que deseja comer -->
+      <!-- Seções de alimentação -->
       <div class="mb-3">
         <label class="form-label">O que você NÃO deseja comer</label>
-        <!-- Café da Manhã -->
-        <fieldset class="mb-4">
-          <legend>Café da Manhã</legend>
+
+        <fieldset v-for="(grupo, nome) in opcoes" :key="nome" class="mb-4">
+          <legend>{{ nome }}</legend>
           <div class="d-flex flex-wrap gap-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="pao" value="Pão Integral - 70 kcal" v-model="cafe" />
-              <label class="form-check-label" for="pao">Pão Integral (70 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="fruta" value="Frutas Mistas - 120 kcal"
-                v-model="cafe" />
-              <label class="form-check-label" for="fruta">Frutas (120 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="fruta" value="Ovo (1 unidade) - 70 kcal"
-                v-model="cafe" />
-              <label class="form-check-label" for="fruta">Ovo (1 unidade) - 70 kcal</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="iogurte" value="Iogurte Natural - 100 kcal"
-                v-model="cafe" />
-              <label class="form-check-label" for="iogurte">Iogurte Natural (100 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="omelete" value="Omelete - 150 kcal" v-model="cafe" />
-              <label class="form-check-label" for="omelete">Omelete (150 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="cereal" value="Cereal Integral - 110 kcal"
-                v-model="cafe" />
-              <label class="form-check-label" for="cereal">Cereal Integral (110 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="suco" value="Suco de Laranja - 90 kcal"
-                v-model="cafe" />
-              <label class="form-check-label" for="suco">Suco de Laranja (90 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="cha" value="Chá Verde - 5 kcal" v-model="cafe" />
-              <label class="form-check-label" for="cha">Chá Verde (5 kcal)</label>
-            </div>
-          </div>
-        </fieldset>
-
-        <!-- Almoço -->
-        <fieldset class="mb-4">
-          <legend>Almoço</legend>
-          <div class="d-flex flex-wrap gap-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="arroz" value="Arroz Integral - 150 kcal"
-                v-model="almoco" />
-              <label class="form-check-label" for="arroz">Arroz Integral (150 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="frango" value="Frango Grelhado - 160 kcal"
-                v-model="almoco" />
-              <label class="form-check-label" for="frango">Frango Grelhado (160 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="salada" value="Salada Variada - 50 kcal"
-                v-model="almoco" />
-              <label class="form-check-label" for="salada">Salada Variada (50 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="batata" value="Batata Doce - 90 kcal"
-                v-model="almoco" />
-              <label class="form-check-label" for="batata">Batata Doce (90 kcal)</label>
-            </div>
-
-          </div>
-        </fieldset>
-
-        <!-- Jantar -->
-        <fieldset class="mb-4">
-          <legend>Jantar</legend>
-          <div class="d-flex flex-wrap gap-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="sopa" value="Sopa de Legumes - 120 kcal"
-                v-model="jantar" />
-              <label class="form-check-label" for="sopa">Sopa de Legumes (120 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="omeleteJantar" value="Omelete - 150 kcal"
-                v-model="jantar" />
-              <label class="form-check-label" for="omeleteJantar">Omelete (150 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="legumes" value="Legumes Assados - 80 kcal"
-                v-model="jantar" />
-              <label class="form-check-label" for="legumes">Legumes Assados (80 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="chaJantar" value="Chá - 5 kcal" v-model="jantar" />
-              <label class="form-check-label" for="chaJantar">Chá (5 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="salmao" value="Salmão Grelhado - 200 kcal"
-                v-model="jantar" />
-              <label class="form-check-label" for="salmao">Salmão Grelhado (200 kcal)</label>
-            </div>
-
-          </div>
-        </fieldset>
-
-        <!-- Lanches -->
-        <fieldset class="mb-4">
-          <legend>Lanches</legend>
-          <div class="d-flex flex-wrap gap-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="barraCereal" value="Barra de Cereal - 80 kcal"
-                v-model="lanche" />
-              <label class="form-check-label" for="barraCereal">Barra de Cereal (80 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="sucoLanche" value="Suco Natural - 90 kcal"
-                v-model="lanche" />
-              <label class="form-check-label" for="sucoLanche">Suco Natural (90 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="bolachaIntegral" value="Bolacha Integral - 130 kcal"
-                v-model="lanche" />
-              <label class="form-check-label" for="bolachaIntegral">Bolacha Integral (130 kcal)</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="frutaLanche" value="Banana - 105 kcal"
-                v-model="lanche" />
-              <label class="form-check-label" for="frutaLanche">Banana (105 kcal)</label>
+            <div v-for="(item, i) in grupo.itens" :key="i" class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :id="`${nome}${i}`"
+                :value="item"
+                v-model="grupo.model"
+              />
+              <label class="form-check-label" :for="`${nome}${i}`">{{ item }}</label>
             </div>
           </div>
         </fieldset>
@@ -219,6 +109,7 @@
       <button type="submit" class="btn btn-primary w-100">Enviar</button>
     </form>
   </div>
+
   <Footer />
 </template>
 
@@ -229,97 +120,146 @@ import router from '@/router';
 import { useAuthStore } from '@/store/store.js';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 export default {
   data() {
     return {
-      receita: {
-        titulo: "Panqueca de Banana com Aveia",
-        descricao: "Uma panqueca nutritiva e sem açúcar, perfeita para um café da manhã saudável.",
-        ingredientes: [
-          "1 banana madura amassada",
-          "1 ovo inteiro",
-          "3 colheres de sopa de aveia em flocos",
-          "1/2 colher de chá de canela em pó",
-          "1 colher de chá de fermento em pó",
-          "1 fio de mel ou xilitol (opcional)",
-          "1 fio de azeite ou óleo de coco para grelhar"
-        ],
-        calorias: 210
-      },
-      receitasAgrupadas: {},
+      receita: null,
       loading: true,
       peso: "",
       altura: "",
       idade: "",
+      objetivo: "",
       calorias: "",
       almoco: [],
       cafe: [],
       jantar: [],
       lanches: [],
+
+      // Opções agrupadas
+      opcoesCafe: [
+        "Pão Integral - 70 kcal",
+        "Frutas Mistas - 120 kcal",
+        "Ovo (1 unidade) - 70 kcal",
+        "Iogurte Natural - 100 kcal",
+        "Omelete - 150 kcal",
+        "Cereal Integral - 110 kcal",
+        "Suco de Laranja - 90 kcal",
+        "Chá Verde - 5 kcal"
+      ],
+      opcoesAlmoco: [
+        "Arroz Integral - 150 kcal",
+        "Frango Grelhado - 160 kcal",
+        "Salada Variada - 50 kcal",
+        "Batata Doce - 90 kcal"
+      ],
+      opcoesJantar: [
+        "Sopa de Legumes - 120 kcal",
+        "Omelete - 150 kcal",
+        "Legumes Assados - 80 kcal",
+        "Chá - 5 kcal",
+        "Salmão Grelhado - 200 kcal"
+      ],
+      opcoesLanches: [
+        "Barra de Cereal - 80 kcal",
+        "Suco Natural - 90 kcal",
+        "Bolacha Integral - 130 kcal",
+        "Banana - 105 kcal"
+      ]
     };
+  },
+  async mounted() {
+    await this.buscarReceitaDoDia();
   },
   methods: {
     enviarFormulario() {
       const dados = {
-        email: this.usuario.email,         // Certifique-se de que este campo exista no seu componente Vue
-        peso: this.peso || "",
-        altura: this.altura || "",
-        idade: this.idade || "",
-        calorias: this.calorias || "",
-        almoco: this.almoco || [],
-        cafe: this.cafe || [],
-        jantar: this.jantar || [],
-        lanches: this.lanches || [],
+        email: this.usuario.email,
+        peso: this.peso,
+        altura: this.altura,
+        idade: this.idade,
+        objetivo: this.objetivo,
+        calorias: this.calorias,
+        almoco: this.almoco,
+        cafe: this.cafe,
+        jantar: this.jantar,
+        lanches: this.lanches,
       };
-      console.log(dados)
-      axios.put('https://transformacao-saudavel.onrender.com/update-user', dados)
-        .then(response => {
-          console.log(response.data.message);
+      console.log(dados);
+
+      axios
+        .put('https://transformacao-saudavel.onrender.com/update-user', dados)
+        .then(() => {
           Swal.fire({
             icon: "success",
             title: "Dados cadastrados com sucesso!",
           });
-          router.push('/planos')
+          router.push('/planos');
         })
         .catch(error => {
-          console.error('Erro ao enviar os dados:', error.response.data.error);
+          console.error('Erro ao enviar os dados:', error);
           Swal.fire({
             icon: "error",
             title: "Erro ao cadastrar os dados!",
           });
         });
     },
+
+    async buscarReceitaDoDia() {
+      try {
+        const receitaSalva = JSON.parse(localStorage.getItem('receitaDoDia'));
+        if (receitaSalva && receitaSalva.data === dayjs().format('YYYY-MM-DD')) {
+          this.receita = receitaSalva.receita;
+          this.loading = false;
+          return;
+        }
+
+        const res = await axios.get('https://transformacao-saudavel.onrender.com/get-receitas');
+        const receitas = res.data;
+        const aleatoria = receitas[Math.floor(Math.random() * receitas.length)];
+
+        this.receita = aleatoria;
+        localStorage.setItem('receitaDoDia', JSON.stringify({
+          data: dayjs().format('YYYY-MM-DD'),
+          receita: aleatoria
+        }));
+        this.loading = false;
+      } catch (error) {
+        console.error('Erro ao buscar receitas:', error);
+        this.loading = false;
+      }
+    },
   },
   setup() {
     const authStore = useAuthStore();
-    const usuario = authStore.usuario; // Pega o usuário da store
-    return {
-      usuario
-    };
+    const usuario = authStore.usuario;
+    return { usuario };
   },
-  components: {
-    NavBar,
-    Footer
-  }
+  components: { NavBar, Footer }
 };
 </script>
-
 <style scoped>
-.text-primary {
-  color: #004aad;
+
+/* Layout lado a lado */
+.receita-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-.btn-primary {
-  background-color: #004aad;
-  border-color: #004aad;
+.receita-text {
+  flex: 1;
+  font-size: 0.95rem;
 }
 
-.btn-primary:hover {
-  background-color: #003b85;
-  border-color: #003b85;
+.receita-imagem img {
+  max-width: 220px;
+  border-radius: 12px;
+  object-fit: cover;
 }
 
+/* Estilos padrões */
 fieldset {
   border: 1px solid #ddd;
   padding: 15px;
@@ -333,18 +273,55 @@ legend {
   color: #004aad;
 }
 
-.d-flex {
-  display: flex;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.gap-3 {
-  gap: 15px;
-}
-.text{
+.text {
   color: #004aad;
+}
+
+.btn-primary {
+  background-color: #004aad;
+  border-color: #004aad;
+}
+
+.btn-primary:hover {
+  background-color: #003b85;
+  border-color: #003b85;
+}
+
+/* 🔹 RESPONSIVIDADE PARA CELULAR */
+@media (max-width: 768px) {
+  .receita-container {
+    padding: 20px;
+  }
+
+  .receita-content {
+    flex-direction: column; /* imagem vai para baixo */
+    align-items: center;
+    text-align: center;
+  }
+
+  .receita-text {
+    margin-bottom: 15px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .receita-imagem img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .form-container {
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  fieldset {
+    padding: 10px;
+  }
+
+  legend {
+    font-size: 1rem;
+  }
 }
 </style>
