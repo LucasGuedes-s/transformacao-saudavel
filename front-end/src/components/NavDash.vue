@@ -39,6 +39,11 @@
               <span class="nav-link" href="#">Meu cardápio</span>
             </router-link>
           </li>
+          <li class="nav-item">
+            <router-link to="/ebooks">
+              <span class="nav-link" href="#">Ebooks</span>
+            </router-link>
+          </li>
           <!-- 
           <li class="nav-item">
             <router-link to="/comprovante">
