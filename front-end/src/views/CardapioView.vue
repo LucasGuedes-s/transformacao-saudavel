@@ -78,6 +78,14 @@ export default {
         const response = await axios.get(`https://transformacao-saudavel.onrender.com/user/get-receitas?email=${email}`);
         this.receitasAgrupadas = response.data;
         this.receitas = response.data
+        if(Object.keys(this.receitasAgrupadas).length === 0){
+          Swal.fire({
+            icon: 'info',
+            title: 'Nenhuma receita disponível',
+            text: 'Ainda não há receitas disponíveis para o seu perfil. Por favor, atualize seus dados na tela inicial.',
+          });
+          router.push('/dashboard')
+        }
       } catch (error) {
         Swal.fire({
           icon: 'error',

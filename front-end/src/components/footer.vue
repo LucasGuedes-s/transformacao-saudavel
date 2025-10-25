@@ -49,6 +49,7 @@
     color: #ffffff;
     padding: 40px 20px;
     text-align: left;
+    margin-top: 80px;
   }
   
   .footer .container {

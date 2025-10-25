@@ -75,7 +75,6 @@ import router from "@/router";
     setup() {
       const authStore = useAuthStore();
       const usuario = authStore.usuario; // Pega o usuário da store
-      console.log(usuario)
       return {
         usuario,
       };

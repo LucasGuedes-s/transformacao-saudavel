@@ -2,7 +2,7 @@
   <NavBar />
 
   <!-- CARD DA RECEITA -->
-  <div v-if="receita" class="container form-container receita-container bg-light p-4 rounded shadow-sm mt-4">
+  <div v-if="receita" class="container form-container receita-container bg-light p-4 rounded shadow-sm mt-5">
     <div class="receita-content d-flex align-items-start">
       <!-- Texto à esquerda -->
       <div class="receita-text flex-fill me-4">
@@ -27,6 +27,7 @@
       </div>
     </div>
   </div>
+  <LinhaDoTempo />
 
   <!-- FORMULÁRIO -->
   <div class="container mt-5 form-container">
@@ -121,54 +122,68 @@ import { useAuthStore } from '@/store/store.js';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
-
+import LinhaDoTempo from '@/components/LinhaDoTempo.vue';
 export default {
   data() {
-    return {
-      receita: null,
-      loading: true,
-      peso: "",
-      altura: "",
-      idade: "",
-      objetivo: "",
-      calorias: "",
-      almoco: [],
-      cafe: [],
-      jantar: [],
-      lanches: [],
+  return {
+    receita: null,
+    loading: true,
+    peso: "",
+    altura: "",
+    idade: "",
+    objetivo: "",
+    calorias: "",
+    almoco: [],
+    cafe: [],
+    jantar: [],
+    lanches: [],
 
-      // Opções agrupadas
-      opcoesCafe: [
-        "Pão Integral - 70 kcal",
-        "Frutas Mistas - 120 kcal",
-        "Ovo (1 unidade) - 70 kcal",
-        "Iogurte Natural - 100 kcal",
-        "Omelete - 150 kcal",
-        "Cereal Integral - 110 kcal",
-        "Suco de Laranja - 90 kcal",
-        "Chá Verde - 5 kcal"
-      ],
-      opcoesAlmoco: [
-        "Arroz Integral - 150 kcal",
-        "Frango Grelhado - 160 kcal",
-        "Salada Variada - 50 kcal",
-        "Batata Doce - 90 kcal"
-      ],
-      opcoesJantar: [
-        "Sopa de Legumes - 120 kcal",
-        "Omelete - 150 kcal",
-        "Legumes Assados - 80 kcal",
-        "Chá - 5 kcal",
-        "Salmão Grelhado - 200 kcal"
-      ],
-      opcoesLanches: [
-        "Barra de Cereal - 80 kcal",
-        "Suco Natural - 90 kcal",
-        "Bolacha Integral - 130 kcal",
-        "Banana - 105 kcal"
-      ]
-    };
-  },
+    // ✅ Agrupando as opções em um único objeto
+    opcoes: {
+      Café_da_Manhã: {
+        itens: [
+          "Pão Integral - 70 kcal",
+          "Frutas Mistas - 120 kcal",
+          "Ovo (1 unidade) - 70 kcal",
+          "Iogurte Natural - 100 kcal",
+          "Omelete - 150 kcal",
+          "Cereal Integral - 110 kcal",
+          "Suco de Laranja - 90 kcal",
+          "Chá Verde - 5 kcal"
+        ],
+        model: [] // vai armazenar os selecionados
+      },
+      Almoço: {
+        itens: [
+          "Arroz Integral - 150 kcal",
+          "Frango Grelhado - 160 kcal",
+          "Salada Variada - 50 kcal",
+          "Batata Doce - 90 kcal"
+        ],
+        model: []
+      },
+      Jantar: {
+        itens: [
+          "Sopa de Legumes - 120 kcal",
+          "Omelete - 150 kcal",
+          "Legumes Assados - 80 kcal",
+          "Chá - 5 kcal",
+          "Salmão Grelhado - 200 kcal"
+        ],
+        model: []
+      },
+      Lanches: {
+        itens: [
+          "Barra de Cereal - 80 kcal",
+          "Suco Natural - 90 kcal",
+          "Bolacha Integral - 130 kcal",
+          "Banana - 105 kcal"
+        ],
+        model: []
+      }
+    }
+  };
+},
   async mounted() {
     await this.buscarReceitaDoDia();
   },
@@ -236,7 +251,7 @@ export default {
     const usuario = authStore.usuario;
     return { usuario };
   },
-  components: { NavBar, Footer }
+  components: { NavBar, Footer, LinhaDoTempo}
 };
 </script>
 <style scoped>
