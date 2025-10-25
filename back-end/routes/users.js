@@ -7,7 +7,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 
-
 /* Rota de login */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body.usuario;
@@ -107,6 +106,74 @@ router.post('/cadastro', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao criar o usuário.' });
+  }
+});
+
+router.post("/:id/historico", async (req, res) => {
+  const { id } = req.params;
+  const { peso, comentario } = req.body;
+  console.log("Adicionando histórico para usuário:", id, "Peso:", peso, "Comentário:", comentario);
+  try {
+    if (!peso || isNaN(peso)) {
+      return res.status(400).json({ error: "Peso inválido" });
+    }
+
+    const usuario = await prisma.user.update({
+      where: { id },
+      data: {
+        historicoPeso: {
+          push: {
+            peso: parseFloat(peso),
+            data: new Date(),
+          },
+        },
+        comentarios: comentario
+          ? {
+              push: {
+                texto: comentario,
+                data: new Date(),
+              },
+            }
+          : undefined,
+        peso: peso.toString(), // atualiza o peso atual também
+      },
+    });
+
+    res.status(200).json({
+      message: "Histórico e comentário adicionados com sucesso!",
+      usuario,
+    });
+  } catch (error) {
+    console.error("Erro ao adicionar histórico:", error);
+    res.status(500).json({ error: "Erro ao adicionar histórico" });
+  }
+});
+
+/**
+ * GET /usuarios/:id/historico
+ * Retorna o histórico de peso e comentários do usuário
+ */
+router.get("/:id/historico", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuario = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        nome: true,
+        historicoPeso: true,
+        comentarios: true,
+      },
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    res.status(200).json(usuario);
+  } catch (error) {
+    console.error("Erro ao buscar histórico:", error);
+    res.status(500).json({ error: "Erro ao buscar histórico" });
   }
 });
 

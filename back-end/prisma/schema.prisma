@@ -23,6 +23,19 @@ model User {
   pagamento    Boolean?  @default(false)
   receitasFavoritas String[] // IDs de receitas favoritas
 
+  // Novos campos
+  historicoPeso      HistoricoPeso[]
+  comentarios        Comentario[]
+}
+
+type HistoricoPeso {
+  peso    Float
+  data    DateTime @default(now())
+}
+
+type Comentario {
+  texto   String
+  data    DateTime @default(now())
 }
 
 model Receita {
