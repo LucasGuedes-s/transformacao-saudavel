@@ -67,9 +67,9 @@ export default {
     async validar() {
       const email = this.usuario.email
       const response = await axios.get(`https://transformacao-saudavel.onrender.com/user/pagamento?email=${email}`);
-      if (!response.data.pagamento) {
+      /*if (!response.data.pagamento) {
         router.push('/planos')
-      }
+      }*/
     },
     async fetchReceitas() {
       try {
