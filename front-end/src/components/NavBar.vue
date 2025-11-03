@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container">
       <!-- Logo -->
       <a class="navbar-brand" href="#">
@@ -23,6 +23,9 @@
       <!-- Links -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="/sobre-nos">Sobre Nós</a>
           </li>
@@ -51,7 +54,7 @@ export default {
 }
 
 .navbar {
-  background-color: #004aad;
+  background-color: #004aad !important;
   padding: 20px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
