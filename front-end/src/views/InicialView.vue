@@ -11,7 +11,7 @@
           Descubra o caminho para o emagrecimento saudável com receitas e eBooks exclusivos por apenas <strong>R$ 9,90</strong>.
         </p>
             <span class="price-badge d-inline-block mt-4" @click="subscribe">
-            Apenas <strong>R$ 9,90</strong>
+            Apenas <strong>R$ 16,90</strong>
             </span>
       </div>
     </header>
@@ -38,7 +38,7 @@
       <div class="container">
         <h2 class="fw-bold">Comece sua transformação agora mesmo!</h2>
         <p class="lead mt-2">
-          Apenas R$ 9,90 para ter acesso completo a todo o conteúdo da plataforma.
+          Apenas R$ 16,90 para ter acesso completo a todo o conteúdo da plataforma.
         </p>
         <button class="cta-button mt-3" @click="subscribe">Quero começar agora</button>
       </div>
