@@ -30,13 +30,11 @@ router.post('/login-google', async (req, res) => {
   const { uid, email, displayName, photoURL } = req.body;
 
   try {
-    // Verificar se o usuário já existe no banco
     let user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (!user) {
-      // Criar novo usuário se não existir
       user = await prisma.user.create({
         data: {
           firebaseUid: uid,

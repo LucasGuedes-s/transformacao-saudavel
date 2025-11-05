@@ -106,7 +106,27 @@ const routes = [
     component: function () {
       return import(/* webpackChunkName: "about" */ '../views/EbooksView.vue')
     }
-  }
+  },
+  {
+    path: '/pagamento',
+    name: 'pagamento',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/PagamentoView.vue')
+    }
+  },
+  {
+    path: '/pagamento-sucesso',
+    name: 'pagamento-sucesso',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/PagamentoSucesso.vue')
+    }
+  },
 ]
 
 const router = createRouter({

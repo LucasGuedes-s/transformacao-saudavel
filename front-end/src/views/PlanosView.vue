@@ -78,7 +78,7 @@ export default {
     async iniciarPagamento(plano, valor) {
       try {
         console.log(plano, valor)
-        // Redireciona o usuário para o link de pagamento
+        
         window.location.href = 'https://mpago.li/1tgpMuc';
       } catch (error) {
         console.error("Erro ao iniciar o pagamento:", error);

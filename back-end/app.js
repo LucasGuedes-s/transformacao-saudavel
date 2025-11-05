@@ -7,17 +7,14 @@ require('dotenv').config({ path: '.env' }); // Certifique-se de carregar as vari
 const cors = require('cors');
 
 // Importando a configuração do Mercado Pago
-const mercadopago = require('mercadopago'); // Usando a versão correta do SDK
+const { MercadoPagoConfig, Preference } = require("mercadopago");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
-// Configuração do Mercado Pago com a chave do token de acesso no .env
-mercadopago.configurations = {
-  access_token: process.env.MERCADO_PAGO_ACCESS_TOKEN
-};
+
 // Adicionando o middleware de CORS
 app.use(cors({
   origin: '*', // Permitir apenas o front-end local
@@ -36,35 +33,74 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para gerar a preferência de pagamento
-app.post('/criar-pagamento', (req, res) => {
-  // Configuração do produto e dados do pagamento
-  const preference = {
-    items: [
-      {
-        title: 'Plano Básico', // Nome do plano ou produto
-        unit_price: 9.90, // Preço do produto
-        quantity: 1, // Quantidade
+// 🔐 Inicializa o cliente do Mercado Pago
+const client = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN,
+});
+
+// 🧾 Rota de criação do pagamento
+app.post("/criar-pagamento", async (req, res) => {
+  try {
+    const preference = new Preference(client);
+
+    const result = await preference.create({
+      body: {
+        items: [
+          {
+            title: "Plano Básico",
+            quantity: 1,
+            unit_price: 0.9,
+            currency_id: "BRL",
+          },
+        ],
+        back_urls: {
+          success: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
+          failure: "https://transformacao-saudavel.vercel.app/cadastro",
+          pending: "https://transformacao-saudavel.vercel.app/login",
+        },
+        auto_return: "approved",
       },
-    ],
-    back_urls: {
-      success: 'http://localhost:8080/', // URL de sucesso
-      failure: 'http://localhost:8080/', // URL de falha
-      pending: 'http://localhost:8080/', // URL para status pendente
-    },
-    auto_return: 'approved', // Retorno automático ao finalizar o pagamento
-  };
-  // Criar a preferência de pagamento no Mercado Pago
-  mercadopago.preferences.create(preference)
-    .then(function(response) {
-      console.log(response)
-      const id = response.body.id; // ID da preferência
-      res.json({ id: id }); // Retorna o ID para ser usado no front-end
-    })
-    .catch(function(error) {
-      console.error(error);
-      res.status(500).send("Erro ao criar o pagamento");
     });
+
+    res.json({ id: result.id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao criar pagamento");
+  }
+});
+// Rota de webhook para notificações de pagamento
+app.post('/webhook', async (req, res) => {
+  try {
+    const payment = req.body;
+    const email = payment.data.payer.email;
+    if (payment.type === 'payment' && payment.data && payment.data.id) {
+      const paymentId = payment.data.id;
+      console.log("🔔 Pagamento recebido:", paymentId);
+
+      res.status(200).send('Webhook processado com sucesso');
+    } else {
+      res.status(200).send('Notificação ignorada');
+    }
+  } catch (error) {
+    console.error("Erro no webhook:", error);
+    res.status(500).send("Erro no webhook");
+  }
+});
+app.post('/api/pagamento-confirmado', async (req, res) => {
+  try {
+    const { paymentId, email } = req.body;
+
+    const user = prisma.user.update({
+      where: { email },
+      data: { pagamento: true },
+    });
+
+    console.log(`💰 Pagamento confirmado (ID: ${paymentId})`);
+    res.status(200).send('Status atualizado');
+  } catch (error) {
+    console.error('Erro ao confirmar pagamento:', error);
+    res.status(500).send('Erro ao confirmar pagamento');
+  }
 });
 
 // Rota de sucesso (pode ser personalizada)
