@@ -86,6 +86,28 @@ app.post('/webhook', async (req, res) => {
     res.status(500).send("Erro no webhook");
   }
 });
+
+app.get("/status-pagamento/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Aqui você consulta o Mercado Pago direto, se não tiver banco:
+    const pagamento = await fetch(`https://api.mercadopago.com/checkout/preferences/${id}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+      },
+    });
+    const data = await pagamento.json();
+
+    // Verifica se tem pagamentos e retorna o status
+    const status = data?.payments?.[0]?.status || "pending";
+    res.json({ status });
+  } catch (err) {
+    console.error("Erro ao consultar pagamento:", err);
+    res.status(500).json({ error: "Erro ao consultar pagamento" });
+  }
+});
+
 app.post('/api/pagamento-confirmado', async (req, res) => {
   try {
     const { paymentId, email } = req.body;
