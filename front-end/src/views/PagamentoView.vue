@@ -37,7 +37,7 @@ async function iniciarPagamento() {
       preference: {
         id: data.id,
       },
-      autoOpen: true, // Abre automaticamente o checkout
+      autoOpen: true,
     });
   } catch (error) {
     console.error(error);

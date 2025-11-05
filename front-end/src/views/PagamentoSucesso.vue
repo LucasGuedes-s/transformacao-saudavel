@@ -14,7 +14,6 @@ onMounted(async () => {
   const status = urlParams.get('status')
 
   if (status === 'approved' && paymentId) {
-    // Chama o backend para atualizar o status do usuário
     await fetch('http://localhost:3000/api/pagamento-confirmado', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
