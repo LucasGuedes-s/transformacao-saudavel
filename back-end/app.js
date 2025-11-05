@@ -95,13 +95,6 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     res.status(500).send("Erro ao criar pagamento");
   }
 });
-import express from "express";
-import mercadopago from "mercadopago";
-import { prisma } from "./prismaClient.js"; // importe seu cliente do Prisma
-
-const app = express();
-
-app.use(express.json());
 
 app.post("/webhook", async (req, res) => {
   try {
