@@ -21,7 +21,7 @@ onMounted(() => {
 
 async function iniciarPagamento() {
   try {
-    const response = await fetch("http://localhost:3000/criar-pagamento", {
+    const response = await fetch("https://transformacao-saudavel.onrender.com/criar-pagamento", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });

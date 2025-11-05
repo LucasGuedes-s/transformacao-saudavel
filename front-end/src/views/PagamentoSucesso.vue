@@ -14,7 +14,7 @@ onMounted(async () => {
   const status = urlParams.get('status')
 
   if (status === 'approved' && paymentId) {
-    await fetch('http://localhost:3000/api/pagamento-confirmado', {
+    await fetch('https://transformacao-saudavel.onrender.com/api/pagamento-confirmado', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ paymentId })
@@ -23,7 +23,7 @@ onMounted(async () => {
 
   // Redireciona o usuário
   setTimeout(() => {
-    window.location.href = '/inicio'
+    window.location.href = '/'
   }, 2000)
 })
 </script>
