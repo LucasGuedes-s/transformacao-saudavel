@@ -1,22 +1,16 @@
 <template>
   <div class="checkout-container">
-    <button @click="iniciarPagamento" class="btn btn-primary">
+    <button @click="abrirCheckout" class="btn btn-primary">
       💳 Pagar com Mercado Pago
     </button>
-
-    <div v-if="pagamentoPendente">
-      <p>⏳ Aguardando confirmação do pagamento...</p>
-    </div>
   </div>
 </template>
 
 <script setup>
-/* eslint-disable */
-import { ref, onMounted } from 'vue'
+ /* eslint-disable */ 
+import { onMounted } from "vue";
 
-let mp
-const pagamentoPendente = ref(false)
-let pagamentoId = null
+let mp;
 
 onMounted(() => {
   mp = new MercadoPago("APP_USR-69f1a03a-b972-4258-bfff-d7bbaecda97f", {
@@ -24,54 +18,41 @@ onMounted(() => {
   });
 });
 
-async function iniciarPagamento() {
+async function abrirCheckout() {
   try {
-    const response = await fetch("https://transformacao-saudavel.onrender.com/criar-pagamento", {
+    const email = 'lucasguedes2908@gmail.com'; // Substitua pelo email do usuário
+    const res = await fetch(`https://transformacao-saudavel.onrender.com/criar-pagamento/${email}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
 
-    const data = await response.json();
+    const data = await res.json();
 
     if (!data.id) {
-      alert("Erro ao gerar pagamento");
+      alert("Erro ao criar pagamento");
       return;
     }
 
-    pagamentoId = data.id;
-    pagamentoPendente.value = true;
-
+    // Abre o Checkout Pro em modo modal (sem redirecionar)
     mp.checkout({
       preference: { id: data.id },
-      autoOpen: true,
+      autoOpen: true, // Abre automaticamente o modal
+      theme: {
+        elementsColor: '#0d6efd',
+        headerColor: '#0d6efd',
+      },
     });
-
-    // Começa a verificar o status
-    verificarStatusPagamento();
   } catch (error) {
     console.error(error);
-    alert("Erro ao iniciar o pagamento");
+    alert("Erro ao iniciar pagamento");
   }
-}
-
-async function verificarStatusPagamento() {
-  const intervalo = setInterval(async () => {
-    const res = await fetch(`https://transformacao-saudavel.onrender.com/status-pagamento/${pagamentoId}`);
-    const data = await res.json();
-
-    if (data.status === "approved") {
-      clearInterval(intervalo);
-      window.location.href = "/meu-cardapio"; // ✅ redireciona automaticamente
-    }
-  }, 5000); // verifica a cada 5 segundos
 }
 </script>
 
 <style scoped>
 .checkout-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   margin-top: 2rem;
 }
 

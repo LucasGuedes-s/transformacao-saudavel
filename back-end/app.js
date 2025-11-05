@@ -3,6 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+
 require('dotenv').config({ path: '.env' }); // Certifique-se de carregar as variáveis de ambiente
 const cors = require('cors');
 
@@ -33,14 +38,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 🔐 Inicializa o cliente do Mercado Pago
 const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN,
 });
-
-// 🧾 Rota de criação do pagamento
-app.post("/criar-pagamento", async (req, res) => {
+app.post("/criar-pagamento/:email", async (req, res) => {
   try {
+    const { email } = req.params;
     const preference = new Preference(client);
 
     const result = await preference.create({
@@ -54,7 +57,7 @@ app.post("/criar-pagamento", async (req, res) => {
           },
         ],
         back_urls: {
-          success: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
+          success: "https://transformacao-saudavel.vercel.app/meu-perfil",
           failure: "https://transformacao-saudavel.vercel.app/cadastro",
           pending: "https://transformacao-saudavel.vercel.app/login",
         },
@@ -62,51 +65,77 @@ app.post("/criar-pagamento", async (req, res) => {
       },
     });
 
-    res.json({ id: result.id });
+    // 🔍 Adicione isso para ver o retorno completo
+    //console.log("RESULTADO MP:", result);
+
+    // Corrige o acesso ao ID, dependendo da estrutura retornada
+    const preferenceId =
+      result.id || result.preference_id || result.body?.id || result.body?.preference_id;
+
+    if (!preferenceId) {
+      console.error("❌ ID não encontrado no retorno do Mercado Pago:", result);
+      return res.status(500).send("Erro ao criar preferência de pagamento");
+    }
+
+    // Salva no banco
+    await prisma.pagamento.create({
+      data: {
+        preferenceId: preferenceId,
+        valor: 0.9,
+        status: "pendente",
+        email: email,
+      },
+    });
+
+  res.json({ id: preferenceId });
+
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao criar pagamento:", error);
     res.status(500).send("Erro ao criar pagamento");
   }
 });
-// Rota de webhook para notificações de pagamento
-app.post('/webhook', async (req, res) => {
+
+app.post("/webhook", async (req, res) => {
   try {
     const payment = req.body;
-    
-    if (payment.type === 'payment' && payment.data && payment.data.id) {
-      const paymentId = payment.data.id;
-      console.log("🔔 Pagamento recebido:", paymentId);
 
-      res.status(200).send('Webhook processado com sucesso');
-    } else {
-      res.status(200).send('Notificação ignorada');
+    // Exemplo: atualiza o status do pagamento
+    if (payment.type === "payment") {
+      const paymentId = payment.data.id;
+
+      const mpPayment = await mercadopago.payment.findById(paymentId);
+
+      // Atualiza no banco (Mongo)
+      await Pagamento.updateOne(
+        { mp_payment_id: paymentId },
+        { status: mpPayment.body.status }
+      );
+      console.log(`💰 Pagamento ID ${paymentId} atualizado para status: ${mpPayment.body.status}`);
     }
+
+    res.sendStatus(200);
   } catch (error) {
     console.error("Erro no webhook:", error);
-    res.status(500).send("Erro no webhook");
+    res.sendStatus(500);
   }
 });
 
-app.get("/status-pagamento/:id", async (req, res) => {
-  const { id } = req.params;
-
+app.get('/status-pagamento/:preferenceId', async (req, res) => {
   try {
-    // Aqui você consulta o Mercado Pago direto, se não tiver banco:
-    const pagamento = await fetch(`https://api.mercadopago.com/checkout/preferences/${id}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
-      },
-    });
-    const data = await pagamento.json();
+    const pagamento = await prisma.pagamento.findUnique({
+      where: { preferenceId: req.params.preferenceId },
+    })
 
-    // Verifica se tem pagamentos e retorna o status
-    const status = data?.payments?.[0]?.status || "pending";
-    res.json({ status });
-  } catch (err) {
-    console.error("Erro ao consultar pagamento:", err);
-    res.status(500).json({ error: "Erro ao consultar pagamento" });
+    if (!pagamento) {
+      return res.status(404).json({ error: 'Pagamento não encontrado' })
+    }
+
+    res.json(pagamento)
+  } catch (error) {
+    console.error('Erro ao buscar status:', error)
+    res.status(500).json({ error: 'Erro no servidor' })
   }
-});
+})
 
 app.post('/api/pagamento-confirmado', async (req, res) => {
   try {

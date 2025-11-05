@@ -37,6 +37,16 @@ type Comentario {
   texto   String
   data    DateTime @default(now())
 }
+model Pagamento {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  preferenceId String   @unique
+  status       String   @default("pendente")
+  email        String?
+  valor        Float
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
 
 model Receita {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
