@@ -72,7 +72,7 @@ app.post("/criar-pagamento", async (req, res) => {
 app.post('/webhook', async (req, res) => {
   try {
     const payment = req.body;
-    const email = payment.data.payer.email;
+    
     if (payment.type === 'payment' && payment.data && payment.data.id) {
       const paymentId = payment.data.id;
       console.log("🔔 Pagamento recebido:", paymentId);
