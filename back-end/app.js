@@ -41,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN,
 });
+
 app.post("/criar-pagamento/:email", async (req, res) => {
   try {
     const { email } = req.params;
@@ -59,7 +60,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
         back_urls: {
           success: "https://transformacao-saudavel.vercel.app/meu-perfil",
           failure: "https://transformacao-saudavel.vercel.app/cadastro",
-          pending: "https://transformacao-saudavel.vercel.app/login",
+          pending: "https://transformacao-saudavel.vercel.app/meu-perfil",
         },
         auto_return: "approved",
       },
@@ -94,31 +95,42 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     res.status(500).send("Erro ao criar pagamento");
   }
 });
+import express from "express";
+import mercadopago from "mercadopago";
+import { prisma } from "./prismaClient.js"; // importe seu cliente do Prisma
+
+const app = express();
+
+app.use(express.json());
 
 app.post("/webhook", async (req, res) => {
   try {
     const payment = req.body;
 
-    // Exemplo: atualiza o status do pagamento
     if (payment.type === "payment") {
       const paymentId = payment.data.id;
 
+      // Consulta o status atualizado no Mercado Pago
       const mpPayment = await mercadopago.payment.findById(paymentId);
 
-      // Atualiza no banco (Mongo)
-      await Pagamento.updateOne(
-        { mp_payment_id: paymentId },
-        { status: mpPayment.body.status }
-      );
-      console.log(`💰 Pagamento ID ${paymentId} atualizado para status: ${mpPayment.body.status}`);
+      const status = mpPayment.body.status;
+
+      // Atualiza no banco via Prisma
+      await prisma.pagamento.updateMany({
+        where: { mp_payment_id: paymentId },
+        data: { status },
+      });
+
+      console.log(`💰 Pagamento ${paymentId} atualizado para: ${status}`);
     }
 
     res.sendStatus(200);
   } catch (error) {
-    console.error("Erro no webhook:", error);
+    console.error("❌ Erro no webhook:", error);
     res.sendStatus(500);
   }
 });
+
 
 app.get('/status-pagamento/:preferenceId', async (req, res) => {
   try {
