@@ -39,7 +39,6 @@ type Comentario {
 }
 model Pagamento {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  preferenceId String   @unique
   status       String   @default("pendente")
   email        String?
   valor        Float
