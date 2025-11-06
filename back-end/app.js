@@ -12,7 +12,7 @@ require('dotenv').config({ path: '.env' }); // Certifique-se de carregar as vari
 const cors = require('cors');
 
 // Importando a configuração do Mercado Pago
-const { MercadoPagoConfig, Preference } = require("mercadopago");
+const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -81,7 +81,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     // Salva no banco
     await prisma.pagamento.create({
       data: {
-        preferenceId: preferenceId,
+        preferenceId,
         valor: 0.9,
         status: "pendente",
         email: email,
@@ -102,21 +102,23 @@ app.post("/webhook", async (req, res) => {
     if (payment.type === "payment") {
       const paymentId = payment.data.id;
 
-      // ✅ Cria uma instância de Payment com o mesmo client
-      const paymentClient = new Payment(client);
-
-      // Consulta o status atualizado no Mercado Pago
+      // Busca os dados completos
       const mpPayment = await paymentClient.get({ id: paymentId });
 
+      // Pegue o preferenceId da ordem
+      const preferenceId = mpPayment.order.id;
       const status = mpPayment.status;
 
-      // Atualiza no banco via Prisma
+      // Atualiza no banco
       await prisma.pagamento.updateMany({
-        where: { preferenceId: paymentId },
-        data: { status },
+        where: { preferenceId },
+        data: {
+          status,
+          mp_payment_id: paymentId,
+        },
       });
 
-      console.log(`💰 Pagamento ${paymentId} atualizado para: ${status}`);
+      console.log(`💰 Pagamento ${paymentId} atualizado para ${status}`);
     }
 
     res.sendStatus(200);
