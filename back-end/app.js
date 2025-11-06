@@ -58,9 +58,9 @@ app.post("/criar-pagamento/:email", async (req, res) => {
           },
         ],
         back_urls: {
-          success: "https://transformacao-saudavel.vercel.app/meu-perfil",
-          failure: "https://transformacao-saudavel.vercel.app/cadastro",
-          pending: "https://transformacao-saudavel.vercel.app/meu-perfil",
+          success: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
+          failure: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
+          pending: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
         },
         auto_return: "approved",
       },
@@ -95,7 +95,6 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     res.status(500).send("Erro ao criar pagamento");
   }
 });
-
 app.post("/webhook", async (req, res) => {
   try {
     const payment = req.body;
@@ -103,14 +102,17 @@ app.post("/webhook", async (req, res) => {
     if (payment.type === "payment") {
       const paymentId = payment.data.id;
 
-      // Consulta o status atualizado no Mercado Pago
-      const mpPayment = await mercadopago.payment.findById(paymentId);
+      // ✅ Cria uma instância de Payment com o mesmo client
+      const paymentClient = new Payment(client);
 
-      const status = mpPayment.body.status;
+      // Consulta o status atualizado no Mercado Pago
+      const mpPayment = await paymentClient.get({ id: paymentId });
+
+      const status = mpPayment.status;
 
       // Atualiza no banco via Prisma
       await prisma.pagamento.updateMany({
-        where: { mp_payment_id: paymentId },
+        where: { preferenceId: paymentId },
         data: { status },
       });
 
@@ -123,7 +125,6 @@ app.post("/webhook", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
 
 app.get('/status-pagamento/:preferenceId', async (req, res) => {
   try {
