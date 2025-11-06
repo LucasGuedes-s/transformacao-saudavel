@@ -108,11 +108,17 @@ app.post("/webhook", async (req, res) => {
       // ✅ Busca os dados do pagamento com a SDK nova
       const mpPayment = await payment.get({ id: paymentId });
 
-      // ✅ Atualiza no banco (Prisma + Mongo)
-      await prisma.pagamento.updateMany({
-        where: { mp_payment_id: paymentId },
-        data: { status: mpPayment.status },
+      const preferenceId = mpPayment.order.id; // ID da preferência associada
+
+      // ✅ Atualiza no banco com base no preference_id
+      const resultado = await prisma.pagamento.updateMany({
+        where: { mp_payment_id: preferenceId },
+        data: { 
+          status: mpPayment.status,
+          mp_payment_id: mpPayment.id 
+        },
       });
+      console.log("💰 Webhook recebido:", resultado);
 
       console.log(`💰 Pagamento ${paymentId} atualizado para: ${mpPayment.status}`);
     }
