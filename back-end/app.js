@@ -13,7 +13,6 @@ const cors = require('cors');
 
 // Importando a configuração do Mercado Pago
 const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
-const mercadopago = require("mercadopago");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -97,25 +96,25 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     res.status(500).send("Erro ao criar pagamento");
   }
 });
+const payment = new Payment(client);
+
 app.post("/webhook", async (req, res) => {
   try {
-    const payment = req.query; // MP envia info via query string (type, data.id)
+    const query = req.query;
 
-    if (payment.type === "payment") {
-      const paymentId = payment["data.id"];
+    if (query.type === "payment") {
+      const paymentId = query["data.id"];
 
-      // ✅ Busca o pagamento no Mercado Pago
-      const mpPayment = await mercadopago.payment.findById(paymentId);
+      // ✅ Busca os dados do pagamento com a SDK nova
+      const mpPayment = await payment.get({ id: paymentId });
 
-      // ✅ Atualiza no banco (Mongo via Prisma)
+      // ✅ Atualiza no banco (Prisma + Mongo)
       await prisma.pagamento.updateMany({
         where: { mp_payment_id: paymentId },
-        data: { status: mpPayment.body.status },
+        data: { status: mpPayment.status },
       });
 
-      console.log(
-        `💰 Pagamento ID ${paymentId} atualizado para: ${mpPayment.body.status}`
-      );
+      console.log(`💰 Pagamento ${paymentId} atualizado para: ${mpPayment.status}`);
     }
 
     res.sendStatus(200);
@@ -125,22 +124,6 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-app.get('/status-pagamento/:preferenceId', async (req, res) => {
-  try {
-    const pagamento = await prisma.pagamento.findUnique({
-      where: { preferenceId: req.params.preferenceId },
-    })
-
-    if (!pagamento) {
-      return res.status(404).json({ error: 'Pagamento não encontrado' })
-    }
-
-    res.json(pagamento)
-  } catch (error) {
-    console.error('Erro ao buscar status:', error)
-    res.status(500).json({ error: 'Erro no servidor' })
-  }
-})
 
 app.post('/api/pagamento-confirmado', async (req, res) => {
   try {
