@@ -13,6 +13,7 @@ const cors = require('cors');
 
 // Importando a configuração do Mercado Pago
 const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
+const mercadopago = require("mercadopago");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -80,13 +81,13 @@ app.post("/criar-pagamento/:email", async (req, res) => {
 
     // Salva no banco
     await prisma.pagamento.create({
-      data: {
-        preferenceId,
-        valor: 0.9,
-        status: "pendente",
-        email: email,
-      },
-    });
+    data: {
+      email: emailCliente,
+      mp_payment_id: preferenceId, // ou preference_id
+      status: "pending",
+    },
+  });
+
 
   res.json({ id: preferenceId });
 
@@ -97,28 +98,23 @@ app.post("/criar-pagamento/:email", async (req, res) => {
 });
 app.post("/webhook", async (req, res) => {
   try {
-    const payment = req.body;
+    const payment = req.query; // MP envia info via query string (type, data.id)
 
     if (payment.type === "payment") {
-      const paymentId = payment.data.id;
+      const paymentId = payment["data.id"];
 
-      // Busca os dados completos
-      const mpPayment = await paymentClient.get({ id: paymentId });
+      // ✅ Busca o pagamento no Mercado Pago
+      const mpPayment = await mercadopago.payment.findById(paymentId);
 
-      // Pegue o preferenceId da ordem
-      const preferenceId = mpPayment.order.id;
-      const status = mpPayment.status;
-
-      // Atualiza no banco
+      // ✅ Atualiza no banco (Mongo via Prisma)
       await prisma.pagamento.updateMany({
-        where: { preferenceId },
-        data: {
-          status,
-          mp_payment_id: paymentId,
-        },
+        where: { mp_payment_id: paymentId },
+        data: { status: mpPayment.body.status },
       });
 
-      console.log(`💰 Pagamento ${paymentId} atualizado para ${status}`);
+      console.log(
+        `💰 Pagamento ID ${paymentId} atualizado para: ${mpPayment.body.status}`
+      );
     }
 
     res.sendStatus(200);

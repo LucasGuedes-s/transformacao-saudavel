@@ -43,6 +43,7 @@ model Pagamento {
   status       String   @default("pendente")
   email        String?
   valor        Float
+  mp_payment_id String?  // ID do pagamento no Mercado Pago
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 }
