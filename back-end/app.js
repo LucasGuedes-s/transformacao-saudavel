@@ -85,6 +85,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
       email: email,
       mp_payment_id: preferenceId, // ou preference_id
       status: "pending",
+      valor: 0.9,
     },
   });
 
