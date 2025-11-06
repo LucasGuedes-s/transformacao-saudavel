@@ -82,7 +82,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     // Salva no banco
     await prisma.pagamento.create({
     data: {
-      email: emailCliente,
+      email: email,
       mp_payment_id: preferenceId, // ou preference_id
       status: "pending",
     },
