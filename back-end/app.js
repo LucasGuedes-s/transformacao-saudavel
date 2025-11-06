@@ -77,12 +77,14 @@ app.post("/criar-pagamento/:email", async (req, res) => {
       console.error("❌ ID não encontrado no retorno do Mercado Pago:", result);
       return res.status(500).send("Erro ao criar preferência de pagamento");
     }
+    console.log("✅ Preferência criada com ID:", preferenceId);
 
     // Salva no banco
     await prisma.pagamento.create({
     data: {
       email: email,
       mp_payment_id: preferenceId, // ou preference_id
+      preferenceId: preferenceId,
       status: "pending",
       valor: 0.9,
     },
@@ -112,7 +114,7 @@ app.post("/webhook", async (req, res) => {
 
       // ✅ Atualiza no banco com base no preference_id
       const resultado = await prisma.pagamento.updateMany({
-        where: { mp_payment_id: preferenceId },
+        where: { preferenceId: preferenceId },
         data: { 
           status: mpPayment.status,
           mp_payment_id: mpPayment.id.toString(),

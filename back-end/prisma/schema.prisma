@@ -40,7 +40,7 @@ type Comentario {
 model Pagamento {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   status       String   @default("pendente")
-  
+  preferenceId String?
   email        String?
   valor        Float
   mp_payment_id String?  // ID do pagamento no Mercado Pago
