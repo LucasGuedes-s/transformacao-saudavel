@@ -115,7 +115,7 @@ app.post("/webhook", async (req, res) => {
         where: { mp_payment_id: preferenceId },
         data: { 
           status: mpPayment.status,
-          mp_payment_id: mpPayment.id 
+          mp_payment_id: mpPayment.id.toString(),
         },
       });
       console.log("💰 Webhook recebido:", resultado);
