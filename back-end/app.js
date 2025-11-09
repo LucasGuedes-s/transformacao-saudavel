@@ -112,7 +112,7 @@ app.post("/webhook", async (req, res) => {
       console.log("💰 Retorno do Mercado Pago:", mpPayment);
 
       // ✅ Acessa o email corretamente
-      const email = mpPayment.body?.metadata?.email;
+      const email = payment.metadata?.email;
       const status = mpPayment.body?.status;
 
       if (!email) {
