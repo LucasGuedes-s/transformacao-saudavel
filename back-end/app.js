@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const { enviarEmailPagamento } = require('./utils/email.js');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -53,7 +53,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
           {
             title: "Plano Básico",
             quantity: 1,
-            unit_price: 0.9,
+            unit_price: 16.9,
             currency_id: "BRL",
           },
         ],
@@ -122,6 +122,7 @@ app.post("/webhook", async (req, res) => {
           where: { email },
           data: { pagamento: true },
         });
+        await enviarEmailPagamento(email);
         console.log(`💰 Usuário ${email} atualizado para pagamento = true`);
         /*
         const pagamentoAtualizado = await prisma.pagamento.update({
@@ -132,6 +133,8 @@ app.post("/webhook", async (req, res) => {
         });*/
       }
 
+      
+
       console.log("✅ Pagamento atualizado:");
     }
     res.sendStatus(200);
@@ -140,7 +143,6 @@ app.post("/webhook", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
 app.post('/api/pagamento-confirmado', async (req, res) => {
   try {
     const { paymentId, email } = req.body;
