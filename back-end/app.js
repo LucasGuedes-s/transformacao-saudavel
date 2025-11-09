@@ -80,7 +80,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     }
     console.log("✅ Preferência criada com ID:", preferenceId);
 
-    // Salva no banco
+    /*
     await prisma.pagamento.create({
     data: {
       email: email,
@@ -89,7 +89,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
       status: "pending",
       valor: 0.9,
     },
-  });
+  });*/
 
 
   res.json({ id: preferenceId });
@@ -127,16 +127,16 @@ app.post("/webhook", async (req, res) => {
           data: { pagamento: true },
         });
         console.log(`💰 Usuário ${email} atualizado para pagamento = true`);
-        // Atualiza apenas o pagamento correto
+        /*
         const pagamentoAtualizado = await prisma.pagamento.update({
           where: { email },
           data: {
             status: "approved",
           },
-        });
+        });*/
       }
 
-       console.log("✅ Pagamento atualizado:", pagamentoAtualizado);
+      console.log("✅ Pagamento atualizado:");
     }
     res.sendStatus(200);
   } catch (error) {

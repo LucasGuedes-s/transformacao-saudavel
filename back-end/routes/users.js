@@ -108,6 +108,36 @@ router.post('/cadastro', async (req, res) => {
   }
 });
 
+router.post('/cadastro/autorizado', async (req, res) => {
+  try {
+    const { email, senha, nome, foto } = req.body.usuario;
+    const nova_senha = bcrypt.hash(senha, 10)
+
+    // Validação básica dos dados (opcional)
+    if (!email || !senha || !nome) {
+      return res.status(400).json({ error: 'Os campos email, senha e nome são obrigatórios.' });
+    }
+
+    // Criar o usuário no banco de dados
+    const newUser = await prisma.User.create({
+      data: {
+        email,
+        senha: nova_senha,
+        nome,
+        foto: foto || [], // Array vazio como padrão
+        receitasFavoritas: [],
+        pagamento: true,
+      },
+    });
+    await enviarEmailCadastro(email, nome)
+    // Responder com o usuário criado
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao criar o usuário.' });
+  }
+});
+
 router.post("/:id/historico", async (req, res) => {
   const { id } = req.params;
   const { peso, comentario } = req.body;
