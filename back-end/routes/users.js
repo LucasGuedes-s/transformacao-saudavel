@@ -5,7 +5,7 @@ const bcrypt = require('../utils/bcrypt.util');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { email } = require('../utils/email.js')
+//const { emailEnviar } = require('../utils/email.js')
 
 /* Rota de login */
 router.post('/login', async (req, res) => {
@@ -99,7 +99,7 @@ router.post('/cadastro', async (req, res) => {
 
       },
     });
-    enviarEmailCadastro(email, nome)
+    //emailEnviar.enviarEmailCadastro(email, nome)
     // Responder com o usuário criado
     res.status(201).json(newUser);
   } catch (error) {
@@ -129,7 +129,7 @@ router.post('/cadastro/autorizado', async (req, res) => {
         pagamento: true,
       },
     });
-    enviarEmailCadastro(email, nome)
+    //emailEnviar.enviarEmailCadastro(email, nome)
     // Responder com o usuário criado
     res.status(201).json(newUser);
   } catch (error) {
