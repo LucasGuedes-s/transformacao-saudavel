@@ -18,6 +18,7 @@ model User {
   peso         String?
   altura       String?
   calorias     Float?
+  preferenceId     String?  // ID da preferência no MP
   foto         String[] @db.String // MongoDB armazena arrays como documentos embutidos
   preferencias String[] @db.String // Altere o nome do campo para seguir convenções (preferências)
   pagamento    Boolean?  @default(false)

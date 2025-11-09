@@ -57,6 +57,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
             currency_id: "BRL",
           },
         ],
+        metadata: { email },
         back_urls: {
           success: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
           failure: "https://transformacao-saudavel.vercel.app/pagamento-sucesso",
@@ -67,7 +68,7 @@ app.post("/criar-pagamento/:email", async (req, res) => {
     });
 
     // 🔍 Adicione isso para ver o retorno completo
-    //console.log("RESULTADO MP:", result);
+    console.log("RESULTADO MP:", result.id);
 
     // Corrige o acesso ao ID, dependendo da estrutura retornada
     const preferenceId =
@@ -106,24 +107,22 @@ app.post("/webhook", async (req, res) => {
 
     if (query.type === "payment") {
       const paymentId = query["data.id"];
-
-      // ✅ Busca os dados do pagamento com a SDK nova
       const mpPayment = await payment.get({ id: paymentId });
 
-      const preferenceId = mpPayment.order.id; // ID da preferência associada
+      const email = mpPayment.body.metadata?.email; // Pegando email do usuário
+      const status = mpPayment.body.status; // approved, pending, etc.
 
-      // ✅ Atualiza no banco com base no preference_id
-      const resultado = await prisma.pagamento.updateMany({
-        where: { preferenceId: preferenceId },
-        data: { 
-          status: mpPayment.status,
-          mp_payment_id: mpPayment.id.toString(),
-        },
-      });
-      console.log("💰 Webhook recebido:", resultado);
+      if (email && status === "approved") {
+        // Atualiza o campo pagamento do usuário
+        await prisma.user.update({
+          where: { email },
+          data: { pagamento: true },
+        });
 
-      console.log(`💰 Pagamento ${paymentId} atualizado para: ${mpPayment.status}`);
+        console.log(`💰 Pagamento aprovado! Usuário ${email} atualizado para pagamento = true`);
+      }
     }
+
 
     res.sendStatus(200);
   } catch (error) {
