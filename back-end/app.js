@@ -104,6 +104,8 @@ const payment = new Payment(client);
 app.post("/webhook", async (req, res) => {
   try {
     const query = req.query;
+    const mpPayment = await payment.get({ id: paymentId });
+    console.log("💰 Retorno do Mercado Pago:", mpPayment);
 
     if (query.type === "payment") {
       const paymentId = query["data.id"];
