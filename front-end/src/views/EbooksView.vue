@@ -38,10 +38,17 @@
 <script>
 import NavBar from "@/components/NavDash.vue";
 import Footer from "@/components/footer.vue";
-
+import { useAuthStore } from "@/store/store.js";
 export default {
   name: "EbooksView",
   components: { NavBar, Footer },
+  setup() {
+    const authStore = useAuthStore();
+    const usuario = authStore.usuario; // Pega o usuário da store
+    return {
+      usuario
+    };
+  },
   data() {
     return {
       ebooks: [
@@ -65,6 +72,19 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    async validar() {
+      const email = this.usuario.email
+      const response = await axios.get(`https://transformacao-saudavel.onrender.com/user/pagamento?email=${email}`);
+      //console.log(response.data)
+      if (!response.data.pagamento) {
+        router.push('/planos')
+      }
+    },
+  },
+  created() {
+    this.validar()
   }
 };
 </script>
