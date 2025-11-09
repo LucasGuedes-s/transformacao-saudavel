@@ -112,8 +112,8 @@ app.post("/webhook", async (req, res) => {
       console.log("💰 Retorno do Mercado Pago:", mpPayment);
 
       // ✅ Acessa o email corretamente
-      const email = payment.metadata?.email;
-      const status = mpPayment.body?.status;
+      const email = mpPayment.metadata?.email;
+      const status = mpPayment.status;
 
       if (!email) {
         console.error("❌ Metadata do usuário não encontrado no pagamento:", mpPayment.body);
@@ -127,17 +127,17 @@ app.post("/webhook", async (req, res) => {
           data: { pagamento: true },
         });
         console.log(`💰 Usuário ${email} atualizado para pagamento = true`);
+        // Atualiza apenas o pagamento correto
+        const pagamentoAtualizado = await prisma.pagamento.update({
+          where: { email },
+          data: {
+            status: "approved",
+          },
+        });
       }
 
-      // Atualiza também tabela de pagamentos
-      await prisma.pagamento.updateMany({
-        where: { preferenceId: mpPayment.body.id.toString() },
-        data: { status, mp_payment_id: mpPayment.body.id.toString() }
-      });
-
-      console.log(`💰 Webhook processado para pagamento ${paymentId}`);
+       console.log("✅ Pagamento atualizado:", pagamentoAtualizado);
     }
-
     res.sendStatus(200);
   } catch (error) {
     console.error("❌ Erro no webhook:", error);
