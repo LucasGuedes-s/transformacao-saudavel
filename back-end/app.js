@@ -100,31 +100,43 @@ app.post("/criar-pagamento/:email", async (req, res) => {
   }
 });
 const payment = new Payment(client);
-
 app.post("/webhook", async (req, res) => {
   try {
     const query = req.query;
 
     if (query.type === "payment") {
       const paymentId = query["data.id"];
-
+      
+      // Busca os dados do pagamento
       const mpPayment = await payment.get({ id: paymentId });
       console.log("💰 Retorno do Mercado Pago:", mpPayment);
 
-      const email = mpPayment.body.metadata?.email; // Pegando email do usuário
-      const status = mpPayment.body.status; // approved, pending, etc.
+      // ✅ Acessa o email corretamente
+      const email = mpPayment.body?.metadata?.email;
+      const status = mpPayment.body?.status;
 
-      if (email && status === "approved") {
-        // Atualiza o campo pagamento do usuário
+      if (!email) {
+        console.error("❌ Metadata do usuário não encontrado no pagamento:", mpPayment.body);
+        return res.sendStatus(400);
+      }
+
+      // Atualiza status do usuário
+      if (status === "approved") {
         await prisma.user.update({
           where: { email },
           data: { pagamento: true },
         });
-
-        console.log(`💰 Pagamento aprovado! Usuário ${email} atualizado para pagamento = true`);
+        console.log(`💰 Usuário ${email} atualizado para pagamento = true`);
       }
-    }
 
+      // Atualiza também tabela de pagamentos
+      await prisma.pagamento.updateMany({
+        where: { preferenceId: mpPayment.body.id.toString() },
+        data: { status, mp_payment_id: mpPayment.body.id.toString() }
+      });
+
+      console.log(`💰 Webhook processado para pagamento ${paymentId}`);
+    }
 
     res.sendStatus(200);
   } catch (error) {
@@ -132,7 +144,6 @@ app.post("/webhook", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
 
 app.post('/api/pagamento-confirmado', async (req, res) => {
   try {
