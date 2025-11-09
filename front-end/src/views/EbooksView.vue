@@ -39,6 +39,7 @@
 import NavBar from "@/components/NavDash.vue";
 import Footer from "@/components/footer.vue";
 import { useAuthStore } from "@/store/store.js";
+import axios from "axios";
 export default {
   name: "EbooksView",
   components: { NavBar, Footer },
