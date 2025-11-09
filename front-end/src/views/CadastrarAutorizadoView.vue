@@ -24,11 +24,11 @@
         <input type="password" class="form-control" id="confirmPassword" v-model="confirm_senha" required />
       </div>
 
-      <!-- Campo de upload de imagem -->
+      <!-- Campo de upload de imagem 
       <div class="form-group">
         <label for="profileImage">Foto de Perfil (opcional)</label>
         <input type="file" class="form-control" id="profileImage" @change="handleImageUpload" />
-      </div>
+      </div>-->
       <!-- 
       <button @click="loginWithGoogle" class="btn btn-primary btn-block mb-3">
         <i class="fab fa-google"></i> Continuar com Google
