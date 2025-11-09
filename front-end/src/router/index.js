@@ -57,6 +57,16 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/CadastroView.vue')
     }
   },
+    {
+    path: '/cadastro/pago',
+    name: 'cadastro',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/CadastrarAutorizadoView.vue')
+    }
+  },
   {
     path: '/cadastrar-receita',
     name: 'cadastrar',

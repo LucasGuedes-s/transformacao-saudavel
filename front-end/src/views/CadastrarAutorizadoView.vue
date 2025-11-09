@@ -33,8 +33,9 @@
       <button @click="loginWithGoogle" class="btn btn-primary btn-block mb-3">
         <i class="fab fa-google"></i> Continuar com Google
       </button>-->
-      <button type="submit"   :disabled="isProcessing"
-      class="btn btn-primary btn-block">Cadastrar</button>
+      <button type="submit" :disabled="isProcessing" class="btn btn-primary btn-block">
+        {{ isProcessing ? 'Processando...' : 'Cadastrar' }}
+      </button>
     </form>
   </div>
 </template>
@@ -105,9 +106,14 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    async submitForm() {   
+    async submitForm() {
+      // Impede múltiplos cliques
+      if (this.isProcessing) return;
 
-      const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c'
+      this.isProcessing = true; // Bloqueia o botão imediatamente
+
+      const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c';
+
       Swal.fire({
         title: 'Realizando cadastro...',
         text: 'Por favor, aguarde.',
@@ -116,48 +122,53 @@ export default {
           Swal.showLoading();
         },
       });
+
       if (this.senha !== this.confirm_senha) {
         Swal.fire({
-          icon: 'erro',
+          icon: 'error',
           title: 'As senhas não coincidem',
           timer: 4000,
-        })
-        return
+        });
+        this.isProcessing = false; // libera o botão
+        return;
       }
-      else{
-        await axios.post("https://transformacao-saudavel.onrender.com/user/cadastro", {
+
+      try {
+        const response = await axios.post(
+          "https://transformacao-saudavel.onrender.com/user/cadastro/autorizado",
+          {
             usuario: {
               email: this.email,
               senha: this.senha,
               nome: this.nome,
-              foto: [foto]
-            }        
-        }).then(response => {
-          this.isProcessing = false; // Reativa o botão após o término
-          console.log(response)
-          router.push('/')
-
-          Swal.fire({
-              icon: 'sucess',
-              title: 'Cadastrado com sucesso',
-              timer: 2000,
-              timerProgressBar: true,
-              showConfirmButton: false
-          });
-        }).catch(error =>{
-          console.log(error)
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Erro ao se cadastrar',
-                  timer: 2000,
-                  timerProgressBar: true,
-                  showConfirmButton: false
-              })
+              foto: [foto],
+            },
           }
-        )
-      }
+        );
+        console.log(response.data);
 
+        Swal.fire({
+          icon: 'success',
+          title: 'Cadastrado com sucesso!',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+        router.push('/');
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao se cadastrar',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      } finally {
+        this.isProcessing = false; // libera o botão sempre, mesmo em erro
+      }
     }
+
   }
 };
 </script>
