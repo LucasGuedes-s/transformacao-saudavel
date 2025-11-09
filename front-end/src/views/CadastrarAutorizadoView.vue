@@ -118,9 +118,7 @@ export default {
         title: 'Realizando cadastro...',
         text: 'Por favor, aguarde.',
         allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+        timerProgressBar: true,
       });
 
       if (this.senha !== this.confirm_senha) {
