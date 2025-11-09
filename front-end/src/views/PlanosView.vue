@@ -9,7 +9,7 @@
           <div class="card text-center shadow-sm h-100">
             <div class="card-header bg-danger text-white">Plano Básico</div>
             <div class="card-body">
-              <h2 class="card-title">R$ 9,90</h2>
+              <h2 class="card-title">R$ 16,90</h2>
               <p class="card-title">O mais vendido</p>
               <h6 class="card-text">Receitas para emagrecer 🔥</h6>
               <ul class="list-group list-group-flush">
@@ -17,18 +17,18 @@
                 <li class="list-group-item">Receitas de Almoço</li>
                 <li class="list-group-item">Receitas de Jantar</li>
               </ul>
-              <button class="btn btn-danger mt-3" @click="iniciarPagamento('Plano Básico', 9.90)">
+              <button class="btn btn-danger mt-3" @click="iniciarPagamento()">
                 Assinar
               </button>
             </div>
           </div>
         </div>
-        <!-- Plano Intermediário -->
+        <!-- Plano Intermediário 
         <div class="col">
           <div class="card text-center shadow-sm h-100 unavailable">
             <div class="card-header text-white" style="background-color: #0065e9">Plano Intermediário</div>
             <div class="card-body">
-              <h2 class="card-title">R$ 19,90</h2>
+              <h2 class="card-title">R$ 29,90</h2>
               <p class="card-text">Receitas exclusivas</p>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">Todas as Receitas do Plano Básico</li>
@@ -42,12 +42,11 @@
           </div>
         </div>
 
-        <!-- Plano Premium -->
         <div class="col">
           <div class="card text-center shadow-sm h-100 unavailable">
             <div class="card-header text-white" style="background-color: #004aad">Plano Premium</div>
             <div class="card-body">
-              <h2 class="card-title">R$ 69,90</h2>
+              <h2 class="card-title">R$ 79,90</h2>
               <p class="card-text">Receitas completas + suporte com Nutricionista.</p>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">Todas as Receitas do Plano Intermediário</li>
@@ -59,7 +58,7 @@
               </button>
             </div>
           </div>
-        </div>
+        </div>-->
 
       </div>
     </div>
@@ -75,11 +74,9 @@ export default {
     NavBar,
   },
   methods: {
-    async iniciarPagamento(plano, valor) {
-      try {
-        console.log(plano, valor)
-        
-        window.location.href = 'https://mpago.li/1tgpMuc';
+    async iniciarPagamento() {
+      try {        
+        window.location.href = '';
       } catch (error) {
         console.error("Erro ao iniciar o pagamento:", error);
         alert("Erro ao gerar o link de pagamento. Tente novamente.");

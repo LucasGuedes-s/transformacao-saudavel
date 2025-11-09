@@ -33,7 +33,6 @@ async function abrirCheckout() {
       return;
     }
 
-    // Abre o Checkout Pro em modo modal (sem redirecionar)
     mp.checkout({
       preference: { id: data.id },
       autoOpen: true, // Abre automaticamente o modal

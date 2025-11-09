@@ -67,9 +67,6 @@ app.post("/criar-pagamento/:email", async (req, res) => {
       },
     });
 
-    // 🔍 Adicione isso para ver o retorno completo
-    console.log("RESULTADO MP:", result.id);
-
     // Corrige o acesso ao ID, dependendo da estrutura retornada
     const preferenceId =
       result.id || result.preference_id || result.body?.id || result.body?.preference_id;
@@ -109,7 +106,6 @@ app.post("/webhook", async (req, res) => {
       
       // Busca os dados do pagamento
       const mpPayment = await payment.get({ id: paymentId });
-      console.log("💰 Retorno do Mercado Pago:", mpPayment);
 
       // ✅ Acessa o email corretamente
       const email = mpPayment.metadata?.email;
