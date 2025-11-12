@@ -47,7 +47,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Swal from "sweetalert2";
 import axios from 'axios';
 import router from '@/router';
-
+import { useAuthStore } from '@/store/store.js';
 export default {
   name: 'cadastro-view',
   data() {
@@ -110,7 +110,7 @@ export default {
       // Impede múltiplos cliques
       if (this.isProcessing) return;
 
-      this.isProcessing = true; // Bloqueia o botão imediatamente
+      this.isProcessing = true; 
 
       const foto = 'https://firebasestorage.googleapis.com/v0/b/clinica-maria-luiza.appspot.com/o/uploads%2Ffuncionarios2.svg?alt=media&token=cc7511c0-9e76-4cd6-9e33-891bbb3cfd1c';
 
@@ -145,7 +145,7 @@ export default {
             },
           }
         );
-        console.log(response.data);
+        console.log(response.status);
         Swal.fire({
           icon: 'success',
           title: 'Cadastrado com sucesso!',
@@ -154,7 +154,11 @@ export default {
           showConfirmButton: false,
         });
 
-        router.push('/');
+        const authStore = useAuthStore();
+        authStore.setToken(response.headers.authorization );
+        authStore.setUsuario(response.data.user.newUser);
+
+        router.push('/planos');
       } catch (error) {
         console.error(error);
         Swal.fire({

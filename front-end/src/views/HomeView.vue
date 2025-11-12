@@ -85,11 +85,7 @@ export default {
           password: this.password,
         }
       }).then(response => {
-        console.log(response)
         const authStore = useAuthStore();
-
-        console.log(response.data.user)
-        console.log(response.headers);
 
         authStore.setToken(response.headers.authorization );
         authStore.setUsuario(response.data.user);
