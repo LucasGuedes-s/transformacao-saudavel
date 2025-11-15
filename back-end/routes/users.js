@@ -101,7 +101,13 @@ router.post('/cadastro', async (req, res) => {
     });
     //emailEnviar.enviarEmailCadastro(email, nome)
     // Responder com o usuário criado
-    res.status(201).json(newUser);
+  const token = jwt.sign(newUser, config.jwtSecret, {
+      expiresIn: 86400 // 24 horas
+  });
+  res.setHeader('Authorization', `Bearer ${token}`);
+  res.status(201).json(newUser);
+  res.end()
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao criar o usuário.' });

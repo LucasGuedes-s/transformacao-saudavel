@@ -146,7 +146,8 @@ export default {
           }
         );
         console.log(response.status);
-        Swal.fire({
+        if(response.status === 201){
+          Swal.fire({
           icon: 'success',
           title: 'Cadastrado com sucesso!',
           timer: 2000,
@@ -154,9 +155,14 @@ export default {
           showConfirmButton: false,
         });
 
+          console.log('Usuário cadastrado com sucesso');
+        }
+
+        console.log(response.data);
+        
         const authStore = useAuthStore();
         authStore.setToken(response.headers.authorization );
-        authStore.setUsuario(response.data.user.newUser);
+        authStore.setUsuario(response.data);
 
         router.push('/planos');
       } catch (error) {
