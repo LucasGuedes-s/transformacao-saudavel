@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import 'dotenv/config';
+import "dotenv/config";
 
 export async function enviarEmailCadastro(destinatario, nomeUsuario) {
   try {

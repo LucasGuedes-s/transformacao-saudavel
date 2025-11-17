@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const { enviarEmailPagamento } = require('./utils/email.js');
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
